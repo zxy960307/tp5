@@ -1,0 +1,73 @@
+<!--包含头部文件-->
+{include file="public/head"}
+
+
+     <!--支付第二步-->
+    <div class="firstly">
+        <div class="search">
+            <img src="/static/index/image/logo.png" />
+        </div>
+
+        <div class="order_infor_module">
+            <div class="order_details">
+                <table width="100%">
+                    <tbody>
+                    <tr>
+                        <td class="fl_left ">
+                            <ul class="order-list">
+                                <li>
+                                    <span class="order-list-no">订单:</span>
+                                    <span class="order-list-name">{$deal->name}</span><span class="order-list-number">{$order.deal_count}份</span>
+                                </li>
+                            </ul>
+                        </td>
+                        <td class="fl_right">
+                            <dl>
+                                <dt>应付金额：</dt>
+                                <dd class="money"><span>{$order.total_price}元</span></dd>
+                            </dl>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        
+        <div align="center"><h1 class="title">订单正在支付中...</h1><img src="{$deal.image}" style="width:300px;height:300px;"/> </div>
+        
+        
+
+    </div>
+
+    
+
+    <div class="footer">
+        <ul class="first">
+           
+        </ul>
+        <ul class="second">
+            
+        </ul>
+    </div>
+
+    <script>
+        function get_pay_status() {
+            url = "{:url('api/order/getstatus')}";
+            pay_success_url = "{:url('pay/paysuccess')}";
+
+            id = {$order.id};
+            postData = {
+                'id' : id,
+            };
+            $.post(url, postData,function(result){
+                //todo
+                if(result.status==1) {
+                    self.location=pay_success_url;
+                }
+            }, 'JSON');
+        }
+        window.setInterval("get_pay_status()", 2000);
+    </script>
+</body>
+</html>

@@ -129,7 +129,10 @@
                     echo "fail";
                 }
                 //交易支付成功
-                else if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
+                else if($_POST['trade_status'] == "WAIT_BUYER_PAY")
+		{
+		echo "fail";
+		}
 
                     //查看订单号是否存在
                     $order=model('Order')->where('out_trade_no')->find();
@@ -167,13 +170,12 @@
                         //验证失败
                         echo "fail";
                     }
-                }
                 //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
                 echo "success";	//请不要修改或删除
             }else {
                 //验证失败
                 echo "fail";
-
-            }
-        }
+           }
+}
     }
+
