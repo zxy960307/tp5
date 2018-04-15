@@ -106,6 +106,13 @@
 
             //获取支付宝post信息
             $arr=$_POST;
+            $postStr="";
+            foreach ($arr as $key=>$item) {
+                $postStr.=$key."=>".$item.",";
+            }
+
+            $fh=fopen(dirname ( __FILE__ ).DIRECTORY_SEPARATOR."./../../post_info.txt");
+            fwrite($fh,$postStr);
             $alipaySevice = new \AlipayTradeService($config);
             $result = $alipaySevice->check($arr);
             if($result) {//验证成功
