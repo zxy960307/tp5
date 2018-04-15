@@ -125,6 +125,8 @@
 
                 //交易状态
                 $trade_status = $_POST['trade_status'];
+                model('Order')->where('out_trade_no',$out_trade_no)
+                    ->update('pay_status',3);
 
                 //交易已结束
                 if($_POST['trade_status'] == 'TRADE_FINISHED') {
