@@ -8,7 +8,7 @@
     namespace app\common\model;
     use think\Model;
 
-    class Order extends Model
+    class Order extends BaseModle
     {
         public function add($data)
         {

@@ -16,7 +16,7 @@
         'notify_url' => "http://119.23.219.185/index.php/index/pay/notify",
 
         //同步跳转
-        'return_url' => "http://119.23.219.185/index.php/index/pay/alipayreturn",
+        'return_url' => "http://119.23.219.185/index.php/index/pay/alipayReturn",
 
         //编码格式
         'charset' => "UTF-8",

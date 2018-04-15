@@ -77,19 +77,27 @@
             $config=config("alipay");
             import("alipay/pagepay/service/AlipayTradeService",EXTEND_PATH);
 
-            //获取支付宝get信息
+            //获取支付宝post信息
             $arr=$_GET;
             $alipaySevice = new \AlipayTradeService($config);
-            $result = $alipaySevice->check($arr);
+            $result = $alipaySevice->check($arr);//验签支付宝返回的信息，使用支付宝公钥
             if($result)
             {
-                print_r($arr);
+                $out_trade_no=$arr['out_trade_no'];
+                $order=model('Order')->where('out_trade_no',$out_trade_no)
+                    ->find();
+                $deal=model('Deal')->where('id',$order->deal_id)->find();
+                return $this->fetch('',[
+                    'deal'=>$deal,
+                    'order'=>$order,
+                ]);
             }
             else{
                 $this->error("订单处理失败");
             }
         }
-	//异步回跳页面
+
+        //异步回跳页面
         public function notify()
         {
             //导入文件
@@ -100,13 +108,72 @@
             $arr=$_POST;
             $alipaySevice = new \AlipayTradeService($config);
             $result = $alipaySevice->check($arr);
-            if($result)
-            {
-                var_dump($arr);
-            }
-            else{
-                $this->error("订单处理失败");
+            if($result) {//验证成功
+
+                //商户订单号
+                $out_trade_no = $_POST['out_trade_no'];
+
+                //支付宝交易号
+                $trade_no = $_POST['trade_no'];
+
+                //交易状态
+                $trade_status = $_POST['trade_status'];
+
+                //交易已结束
+                if($_POST['trade_status'] == 'TRADE_FINISHED') {
+                    echo "fail";
+                }
+                //未付款交易超时关闭
+                elseif($_POST['trade_status'] == 'TRADE_CLOSED')
+                {
+                    echo "fail";
+                }
+                //交易支付成功
+                else if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
+
+                    //查看订单号是否存在
+                    $order=model('Order')->where('out_trade_no')->find();
+                    if(empty($order))
+                    {
+                        //验证失败
+                        echo "fail";
+                    }
+                    
+                    //查看交易状态
+                    if($order->pay_status!=0)
+                    {
+                        //验证失败
+                        echo "fail";
+                    }
+
+                    //入库操作
+                    $data=[
+                        'trade_no'=>$trade_no,
+                        'pay_time'=>time(),
+                        'pay_status'=>1,
+                        'pay_amount'=>$_POST['total_amount'],
+                    ];
+                    $res=model('Order')->where('out_trade_no',$out_trade_no)
+                        ->update($data);
+                    if(!$res)
+                    {
+                        return false;
+                    }
+
+                    //将团购商品总数做相应处理
+                    $res=model('Deal')->increaseCount($order->deal_id,$order->deal_count);
+                    if(!$res)
+                    {
+                        //验证失败
+                        echo "fail";
+                    }
+                }
+                //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
+                echo "success";	//请不要修改或删除
+            }else {
+                //验证失败
+                echo "fail";
+
             }
         }
-
     }

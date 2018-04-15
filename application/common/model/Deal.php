@@ -81,4 +81,27 @@
             $datas[]="status=1";
              return $this->where(implode(' AND ',$datas))->order($order)->paginate();
         }
+
+        //更新团购商品总数
+        public function increaseCount($id,$count=1)
+        {
+            $count=intval($count);
+            $id=intval($id);
+            if(!$count||!$id)
+            {
+                return false;
+            }
+            $oldCount=$this->where('id',$id)->total_count;
+            $newCount=$oldCount-$count;
+            if($newCount<0)
+            {
+                return false;
+            }
+            $res=$this->where('id',$id)->update(['total_count'=>$newCount]);
+            if(!$res)
+            {
+                return false;
+            }
+            return true;
+        }
     }
