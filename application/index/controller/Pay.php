@@ -39,7 +39,9 @@
             $out_trade_no =$order->out_trade_no;
 
             //订单名称，必填
-            $subject = "o2o 支付";
+            $deal_name=model("Deal")->where("id",$order->deal_id)->find()->name;
+            $subject = "o2o订单 商品名:"
+                .$deal_name."*".$order->deal_counta." 订单号:".$order->out_trade_no;
 
             //付款金额，必填
             $total_amount =$order->total_price;
@@ -66,5 +68,25 @@
 
             //输出表单
             var_dump($response);
+        }
+
+        //异步回跳页面
+        public function notify()
+        {
+            //导入文件
+            $config=config("alipay");
+            import("alipay/pagepay/service/AlipayTradeService",EXTEND_PATH);
+
+            //获取支付宝post信息
+            $arr=$_POST;
+            $alipaySevice = new \AlipayTradeService($config);
+            $result = $alipaySevice->check($arr);
+            if($result)
+            {
+                var_dump($arr);
+            }
+            else{
+                $this->error("订单处理失败");
+            }
         }
     }
