@@ -31,9 +31,9 @@
             }
 
             //导入文件
-            $config=config("alipay.");
-            import("alipay\pagepay\service\AlipayTradeService",EXTEND_PATH);
-            import("alipay\pagepay\buildmodel\AlipayTradePagePayContentBuilder",EXTEND_PATH);
+            $config=config("alipay");
+            import("alipay/pagepay/service/AlipayTradeService",EXTEND_PATH);
+            import("alipay/pagepay/buildermodel/AlipayTradePagePayContentBuilder",EXTEND_PATH);
 
             //商户订单号，商户网站订单系统中唯一订单号，必填
             $out_trade_no =$order->out_trade_no;
@@ -53,7 +53,7 @@
             $payRequestBuilder->setTotalAmount($total_amount);
             $payRequestBuilder->setOutTradeNo($out_trade_no);
 
-            $aop = new AlipayTradeService($config);
+            $aop = new \AlipayTradeService($config);
 
             /**
              * pagePay 电脑网站支付请求
