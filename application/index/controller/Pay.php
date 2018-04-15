@@ -128,48 +128,48 @@
                 {
                     echo "fail";
                 }
-                //交易支付成功
+                //交易创建
                 else if($_POST['trade_status'] == "WAIT_BUYER_PAY")
-		{
-		echo "fail";
-		}
+		        {
+		            echo "fail";
+		        }
 
-                    //查看订单号是否存在
-                    $order=model('Order')->where('out_trade_no')->find();
-                    if(empty($order))
-                    {
-                        //验证失败
-                        echo "fail";
-                    }
-                    
-                    //查看交易状态
-                    if($order->pay_status!=0)
-                    {
-                        //验证失败
-                        echo "fail";
-                    }
+                //查看订单号是否存在
+                $order=model('Order')->where('out_trade_no')->find();
+                if(empty($order))
+                {
+                    //验证失败
+                    echo "fail";
+                }
 
-                    //入库操作
-                    $data=[
-                        'trade_no'=>$trade_no,
-                        'pay_time'=>time(),
-                        'pay_status'=>1,
-                        'pay_amount'=>$_POST['total_amount'],
-                    ];
-                    $res=model('Order')->where('out_trade_no',$out_trade_no)
-                        ->update($data);
-                    if(!$res)
-                    {
-                        return false;
-                    }
+                //查看交易状态
+                if($order->pay_status!=0)
+                {
+                    //验证失败
+                    echo "fail";
+                }
 
-                    //将团购商品总数做相应处理
-                    $res=model('Deal')->increaseCount($order->deal_id,$order->deal_count);
-                    if(!$res)
-                    {
-                        //验证失败
-                        echo "fail";
-                    }
+                //入库操作
+                $data=[
+                    'trade_no'=>$trade_no,
+                    'pay_time'=>time(),
+                    'pay_status'=>1,
+                    'pay_amount'=>$_POST['total_amount'],
+                ];
+                $res=model('Order')->where('out_trade_no',$out_trade_no)
+                    ->update($data);
+                if(!$res)
+                {
+                    echo "fail";
+                }
+
+                //将团购商品总数做相应处理
+                $res=model('Deal')->increaseCount($order->deal_id,$order->deal_count);
+                if(!$res)
+                {
+                    //验证失败
+                    echo "fail";
+                }
                 //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
                 echo "success";	//请不要修改或删除
             }else {
