@@ -29,5 +29,4 @@
 
         //支付宝公钥,查看地址：https://openhome.alipay.com/platform/keyManage.htm 对应APPID下的支付宝公钥。
         'alipay_public_key' => "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqTk2wtxoTXK/8yPYsoZFgV1KVYce4Rd6lqX/wtIaskirH5NoGhNfAEPRrM8Gki1xh17ynub2pTdX/Y0ynCwezFlUpFSteG+JuH+YOlaeOiSFQCTNYCyXj+Jtfl6hmFNAmhkpAZzGbSqgax0LAvPPvIlq5njFCG6uPO6oVpCQ/3+gbjpZ+EAUIZFaneo1DURV9HT/Wt+gCLvrWtu4c+jf6z41aSTMsz9jotpX7/BpMNXZwVkGSmHy0KwMdj8ynDp0iCjUF4mR53HvlMtXWOIWSQzk9s/303nlL01zJ6qkpdthwshsHjq3ZU+YGw+DrbrK3NRPZM9N9URC+9xQg1wGewIDAQAB",
-
     ];

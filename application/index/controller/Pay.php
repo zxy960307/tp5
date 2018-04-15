@@ -70,6 +70,11 @@
             var_dump($response);
         }
 
+	public function paysuccess()
+	{
+	    return $this->fetch();
+	}
+
         //同步回跳页面
         public function alipayReturn()
         {
@@ -106,13 +111,14 @@
 
             //获取支付宝post信息
             $arr=$_POST;
-            $postStr="";
+		$postStr="";
             foreach ($arr as $key=>$item) {
                 $postStr.=$key."=>".$item.",";
             }
 
-            $fh=fopen(dirname ( __FILE__ ).DIRECTORY_SEPARATOR."./../../post_info.txt");
+            $fh=fopen(dirname ( __FILE__ ).DIRECTORY_SEPARATOR."./../../post_info.txt","a");
             fwrite($fh,$postStr);
+		fclose($fh);
             $alipaySevice = new \AlipayTradeService($config);
             $result = $alipaySevice->check($arr);
             if($result) {//验证成功
@@ -125,17 +131,15 @@
 
                 //交易状态
                 $trade_status = $_POST['trade_status'];
-                model('Order')->where('out_trade_no',$out_trade_no)
-                    ->update(['pay_status'=>3]);
-
+		//model("Order")->where("out_trade_no",$out_trade_no)->update(["pay_time"=>$trade_status]);
                 //交易已结束
                 if($_POST['trade_status'] == 'TRADE_FINISHED') {
-                    echo "fail";
+                    echo "success";
                 }
                 //未付款交易超时关闭
                 elseif($_POST['trade_status'] == 'TRADE_CLOSED')
                 {
-                    echo "fail";
+                    echo "success";
                 }
                 //交易创建
                 else if($_POST['trade_status'] == "WAIT_BUYER_PAY")
@@ -144,18 +148,18 @@
 		        }
 
                 //查看订单号是否存在
-                $order=model('Order')->where('out_trade_no')->find();
+                $order=model('Order')->where('out_trade_no',$out_trade_no)->find();
                 if(empty($order))
                 {
                     //验证失败
-                    echo "fail";
+                    echo "success";
                 }
 
                 //查看交易状态
                 if($order->pay_status!=0)
                 {
                     //验证失败
-                    echo "fail";
+                    echo "success";
                 }
 
                 //入库操作
@@ -174,11 +178,6 @@
 
                 //将团购商品总数做相应处理
                 $res=model('Deal')->increaseCount($order->deal_id,$order->deal_count);
-                if(!$res)
-                {
-                    //验证失败
-                    echo "fail";
-                }
                 //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
                 echo "success";	//请不要修改或删除
             }else {
